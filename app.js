@@ -40,12 +40,17 @@ app.use((err, req, res, next) => {
 //     console.log(`Server is running on http://localhost:${PORT}`)
 // })
 
+// Vercel 서버리스 환경은 정적파일 제공 안해서 JS/CSS 직접 등록
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCssUrl: 'https://unpkg.com/swagger-ui-dist/swagger-ui.css',
     customJs: [
         'https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js',
         'https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js'
     ],
-}));
+}))
+app.get('/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json')
+    res.send(swaggerSpec)
+})
 
 export default app
