@@ -8,9 +8,7 @@ const options = {
             version: '1.0.0',
             description: 'MySQL + Express API Documentation',
         },
-        servers: [
-            { url: `http://localhost:${process.env.PORT || 3000}`, description: 'Local server' },
-        ],
+        servers: [{ url: '/' }],
     },
     apis: ['./routes/*.js', './docs/schemas/*.yaml'], // routes와 yaml 둘 다 읽기
 }
