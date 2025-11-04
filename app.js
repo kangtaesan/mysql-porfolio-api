@@ -2,8 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import postsRouter from './routes/posts.js'
-import swaggerUi from 'swagger-ui-express'
-import swaggerSpec from './docs/swagger.js'
+import { fileURLToPath } from 'url'
+import path from 'path'
 
 // .env 읽기
 dotenv.config()
