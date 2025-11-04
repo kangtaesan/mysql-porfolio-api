@@ -2,9 +2,10 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import postsRouter from './routes/posts.js'
-import fs from 'fs'
-import { fileURLToPath } from 'url'
-import path from 'path'
+
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from './docs/swagger.js'
+
 
 // .env 읽기
 dotenv.config()
@@ -35,47 +36,13 @@ app.use((err, req, res, next) => {
 })
 
 // 로컬 개발 시 app.listen() = 자체적으로 서버 소켓을 열어 포트 점유
-// Vercel(서버리스)는 직접 포트 바인딩 x
-// const PORT = process.env.PORT || 3000
-// app.listen(PORT, () => {
-//     console.log(`Server is running on http://localhost:${PORT}`)
-// })
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// 스펙 JSON 엔드포인트
-app.get('/api-docs.json', (_, res) => {
-    const specPath = path.join(__dirname, 'public', 'swagger.json')
-    const spec = JSON.parse(fs.readFileSync(specPath, 'utf-8'))
-    res.json(spec)
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`)
 })
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-// UI는 CDN으로만 로드하는 정적 HTML 반환
-app.get('/api-docs', (_, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8')
-    res.end(`<!doctype html>
-  <html>
-    <head>
-      <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
-      <meta name="viewport" content="width=device-width,initial-scale=1" />
-      <title>API Docs</title>
-    </head>
-    <body>
-      <div id="swagger-ui"></div>
-      <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-      <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
-      <script>
-        SwaggerUIBundle({
-          url: '/api-docs.json',
-          dom_id: '#swagger-ui',
-          presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-          layout: 'StandaloneLayout'
-        })
-      </script>
-    </body>
-  </html>`)
-})
+app.get('/api-docs.json', (_req, res) => res.json(swaggerSpec))
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 export default app
