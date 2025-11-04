@@ -41,35 +41,40 @@ app.use((err, req, res, next) => {
 // })
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-// 1) 스펙 JSON 엔드포인트
-app.get('/api-docs.json', (_, res) => res.json(swaggerSpec))
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-// 2) UI는 CDN으로만 로드하는 정적 HTML 반환
+// 스펙 JSON 엔드포인트
+app.get('/api-docs.json', (_, res) => {
+    const specPath = path.join(__dirname, 'public', 'swagger.json')
+    const spec = JSON.parse(fs.readFileSync(specPath, 'utf-8'))
+    res.json(spec)
+})
+
+// UI는 CDN으로만 로드하는 정적 HTML 반환
 app.get('/api-docs', (_, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
     res.end(`<!doctype html>
-<html>
-  <head>
-    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Portfolio API Docs</title>
-  </head>
-  <body>
-    <div id="swagger-ui"></div>
-    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
-    <script>
-      window.onload = () => {
+  <html>
+    <head>
+      <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <title>API Docs</title>
+    </head>
+    <body>
+      <div id="swagger-ui"></div>
+      <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+      <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+      <script>
         SwaggerUIBundle({
           url: '/api-docs.json',
           dom_id: '#swagger-ui',
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
           layout: 'StandaloneLayout'
-        });
-      };
-    </script>
-  </body>
-</html>`)
+        })
+      </script>
+    </body>
+  </html>`)
 })
 
 export default app

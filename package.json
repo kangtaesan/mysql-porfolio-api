@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:spec": "redocly bundle api/schemas/posts.yaml -o public/swagger.json --ext json",
+    "deploy": "npm run build:spec && vercel --prod"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@redocly/openapi-cli": "^1.0.0-beta.95",
     "nodemon": "^3.1.10"
   }
 }
