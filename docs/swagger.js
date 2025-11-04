@@ -10,7 +10,7 @@ const options = {
         },
         servers: [{ url: '/' }],
     },
-    apis: ['./routes/*.js', './schemas/*.yaml'], // routes와 yaml 둘 다 읽기
+    apis: ['./routes/*.js', './api/schemas/*.yaml'], // routes와 yaml 둘 다 읽기
 }
 
 export default swaggerJSDoc(options)
