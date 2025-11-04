@@ -48,9 +48,5 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
         'https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js'
     ],
 }))
-app.get('/swagger.json', (req, res) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.send(swaggerSpec)
-})
 
 export default app
