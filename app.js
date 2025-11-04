@@ -40,6 +40,12 @@ app.use((err, req, res, next) => {
 //     console.log(`Server is running on http://localhost:${PORT}`)
 // })
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCssUrl: 'https://unpkg.com/swagger-ui-dist/swagger-ui.css',
+    customJs: [
+        'https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js',
+        'https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js'
+    ],
+}));
 
 export default app
