@@ -40,13 +40,38 @@ app.use((err, req, res, next) => {
 //     console.log(`Server is running on http://localhost:${PORT}`)
 // })
 
-// Vercel 서버리스 환경은 정적파일 제공 안해서 JS/CSS 직접 등록
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCssUrl: 'https://unpkg.com/swagger-ui-dist/swagger-ui.css',
-    customJs: [
-        'https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js',
-        'https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js'
-    ],
-}))
+// Vercel 서버리스 환경은 정적파일 제공 x
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+// 1) 스펙 JSON 엔드포인트
+app.get('/api-docs.json', (_, res) => res.json(swaggerSpec))
+
+// 2) UI는 CDN으로만 로드하는 정적 HTML 반환
+app.get('/api-docs', (_, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    res.end(`<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Portfolio API Docs</title>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+    <script>
+      window.onload = () => {
+        SwaggerUIBundle({
+          url: '/api-docs.json',
+          dom_id: '#swagger-ui',
+          presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+          layout: 'StandaloneLayout'
+        });
+      };
+    </script>
+  </body>
+</html>`)
+})
 
 export default app
