@@ -39,9 +39,7 @@ app.use((err, req, res, next) => {
 // app.listen(PORT, () => {
 //     console.log(`Server is running on http://localhost:${PORT}`)
 // })
-
-// Vercel 서버리스 환경은 정적파일 제공 x
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // 1) 스펙 JSON 엔드포인트
 app.get('/api-docs.json', (_, res) => res.json(swaggerSpec))
