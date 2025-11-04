@@ -1,5 +1,7 @@
 import swaggerJSDoc from 'swagger-jsdoc'
 
+const baseUrl = process.env.BASE_URL || '/'
+
 const options = {
     definition: {
         openapi: '3.0.0',
@@ -8,7 +10,7 @@ const options = {
             version: '1.0.0',
             description: 'MySQL + Express API Documentation',
         },
-        servers: [{ url: '/' }],
+        servers: [{ url: baseUrl }],
     },
     apis: ['./routes/*.js', './schemas/*.yaml'], // routes와 yaml 둘 다 읽기
 }
